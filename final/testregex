@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+import os, sys, re
+
+try:
+	fh = open("test", "r")
+except:
+	print("ERROR OPENING")
+
+text = fh.read()
+fh.close()
+
+regex = re.compile(r'[0-9]{1,2}[:][0-9]{2}[ ]((am)|(AM)|(a.m.)|(A.M.)|(pm)|(PM)|(p.m.)|(P.M.))', re.MULTILINE)
+
+for match in regex.finditer(text):
+	print('%s' % match.group())

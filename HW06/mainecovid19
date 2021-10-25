@@ -1,0 +1,72 @@
+#!/usr/bin/python
+
+import os, csv, matplotlib
+from matplotlib import pyplot as plt
+from datetime import datetime
+
+# run shell command to grab current data from Johns Hopkins github
+os.system('cd COVID-19/; git pull; cd ../')
+
+# iterate through 'Confirmed', 'Recovered', and 'Deaths' data from
+# Johns Hopkins github repository, COVID-19
+CRD = ['confirmed', 'recovered', 'deaths']
+
+for k in range(3):
+	string = CRD[k]
+	# initialize path to traverse to COVID-19 'Deaths' data
+	path = "//home/pi/ECE331/HW06/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_"
+	path = path + string + "_global.csv"
+
+	# try to open file
+	try:
+		fh = open(path, "r")
+	except:
+		print("Error: Can not open file")
+	
+	# return reader object to iterate over lines of csv file
+	reader = csv.reader(fh)
+
+	# grab header row from csv file (dates for x-axis)
+	header = next(reader)
+	# truncate header list to only contain dates
+	header = header[4:]
+
+	# initialize an empty list to append data
+	data = []
+
+	# iterate over each line of csv file (row is a list)
+	for row in reader:
+		if row[0] == 'Maine':
+			# truncate each row to only contain numerical data 
+			row = row[4:]
+			if row[-1] == '':
+				row[-1] = '0'
+			# convert each value from a string to an int and append nested 	   
+			# 'row' lists to a 'data[]' list
+			#for val in row:
+			#	if val == '':
+			#		val = '0'
+			data.append([int(val) for val in row])
+	data = data[0]
+
+	# initialize and  append dates in '%m/%d/%y' format using 'datetime' library
+	date = []
+	for i in range(len(header)):
+		date.append(datetime.strptime(header[i], '%m/%d/%y'))
+
+	# show number of cases since most recent date
+	print('Number %s since %s as of %s: ' % (string, date[-2], date[-1])) 
+	print(data[-1] - data[-2])
+
+	# plot confirmed cases vs. time
+	plt.plot(date, data, label='%s' % string)
+	plt.annotate('%s' % data[-1], xy = (date[-1], data[-1]))
+
+fh.close()	
+plt.xlabel('Date')
+plt.ylabel('Number of People')
+plt.title('COVID-19 Maine Data vs. Time')
+plt.legend()
+plt.grid()
+plt.show()
+

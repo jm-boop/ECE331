@@ -1,0 +1,150 @@
+
+1.
+|   Network (DDN)   |     IP (DDN)     |   Netmask (CIDR)   |     Broadcast (DDN)   |
+|a) 10.14.208.0     |   10.14.210.88   |       /20          |b) 10.14.223.255       |
+|  192.168.161.64   |c) 192.168.161.64 |d)     /26          |   192.168.161.127     |
+
+a)
+IP in binary      --> 00001010 00001110 11010010 01011000
+Netmask in binary --> 11111111 11111111 11110000 00000000
+
+To get Network address, the IP address is bitwise anded with the Netmask.
+	 	
+		IP:      00001010 00001110 11010010 01011000
+          (&)	Netmask: 11111111 11111111 11110000 00000000
+	 ________________________________________________________
+		Network: 00001010 00001110 11010000 00000000
+		
+
+So Network (DDN) = 10.14.208.0
+
+b) 
+To get Broadcast address, the IP address is bitwise ored with the ~Netmask.
+
+		IP:        00001010 00001110 11010010 01011000
+	  (|)	~Netmask:  00000000 00000000 00001111 11111111
+        _________________________________________________________
+		Broadcast: 00001010 00001110 11011111 11111111
+
+So Broadcast address = 10.14.223.255
+
+c and d) 
+Network in binary   --> 11000000 10101000 10100001 01000000
+Broadcast in binary --> 11000000 10101000 10100001 01111111
+
+Since last 6 bits of Network address are zero, guess Netmask (CIDR) as /26.
+IP address can be 192.168.161.(64 to 127).
+
+Check by bitwise anding guessed Netmask (/26) and IP address (192.168.161.64):
+
+Guess Netmask:               11111111 11111111 11111111 11000000
+Guess IP:               (&)  11000000 10101000 10100001 01000000
+		      ____________________________________________
+Correct Network:             11000000 10101000 10100001 01000000
+
+Check by bitwise oring:
+
+Guess ~Netmask:              00000000 00000000 00000000 00111111
+Guess IP:               (|)  11000000 10101000 10100001 01000000
+	              ___________________________________________
+Correct Broadcast:           11000000 10101000 10100001 01111111
+
+Check by bitwise anding guess Netmask (/26) and IP address (192.168.161.127):
+
+Guess Netmask:              11111111 11111111 11111111 11000000
+Guess IP:               (&) 11000000 10101000 10100001 01111111
+	              __________________________________________
+Correct Network:	    11000000 10101000 10100001 11000000
+
+Guess ~Netmask:             00000000 00000000 00000000 00111111
+Guess IP: 		(|) 11000000 10101000 10100001 01111111
+		      __________________________________________
+Correct Broadcast:          11000000 10101000 10100001 01111111
+	          
+So IP (DDN)       = 192.168.161.(64 to 127)
+   Netmask (CIDR) = /26
+
+
+
+2. 
+a) 
+pymotw.com/2/socket/tcp.html 
+
+b)
+Tutorial is completed.
+
+c)
+socket()  - Creates a server/client socket object to be binded or connected to
+bind()    - Associates the server socket with a specified address and port number  
+listen()  - This function puts the server into listen mode, listening for a specified 
+	    number of connections
+accept()  - Returns address of client along with the open connection between server/client.
+            Generates a different socket on client side with self-generated port #.
+connect() - Client side uses this function to associate socket directly to remote address
+
+
+
+3.
+Install lighttpd web server and all of it's packages
+$ sudo apt-get install lighttpd
+
+Check that lighttpd daemon is running
+$ ps agx
+
+Check where lighttpd installed data
+$ dpkg -L lighttpd
+
+$ cd /var/www/html
+
+$ sudo vim index.html
+
+Check to see that web browser can see web server by checking processes
+$ ps agx
+
+Did not use elinks, rather searched IP address to see web browser
+
+
+
+4.
+$ sudo apt-get install sqlite3
+
+$ sqlite3 <DB File Name>
+
+
+
+5.
+Install php and all of it's packages
+$ sudo apt-get install php
+
+Uninstall apache2 to use lighttpd
+$ sudo apt remove apache2
+
+Restart lighttpd web server
+$ sudo service lighttpd start
+
+List processes to check if php and lighttpd are running
+$ ps agx
+
+Traverse to directory containg .conf files
+$ cd /etc/lighttpd/
+$ ls -R
+
+Enable cgi.conf, fastcgi.conf, and fastcgi-php.conf
+$ sudo lighttpd-enable-mod cgi
+$ sudo lighttpd-enable-mod fastcgi
+$ sudo lighttpd-enable-mod fastcgi-php
+
+Apply changes to running web server
+$ service lighttpd force-reload
+
+
+
+6.
+5 11 */2 * * xkcd
+55 23 */2 * * xkcd
+
+
+
+7.
+enscript -b'ECE 331 Homework 7 %E %*|$%|John Bowen' -O hw07 -o - | ps2pdf - ECE-331-Bowen-John-HW-07.pdf
+

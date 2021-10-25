@@ -1,0 +1,64 @@
+#!/usr/bin/python
+
+import os, csv
+from matplotlib import pyplot as plt
+from datetime import datetime
+
+# run shell command to grab current data from Johns Hopkins github
+os.system('cd COVID-19/; git pull; cd ../')
+# initialize path to traverse to COVID-19 'Deaths' data
+path = "//home/pi/ECE331/HW06/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
+
+# try to open file
+try:
+	fh = open(path, "r")
+except:
+	print("Error: Can not open file")
+
+# return reader object to iterate over lines of csv file
+reader = csv.reader(fh)
+
+# grab header row from csv file (dates for x-axis)
+header = next(reader)
+# truncate header list to only contain dates
+header = header[4:]
+
+# initialize an empty list to append relative death count
+data = []
+
+# iterate over each line of csv file (row is a list)
+for row in reader:
+	# truncate each row to only contain death count data 
+	row = row[4:]
+	# convert each death count value from a string to an int and append nested 	   # 'row' lists to a 'data[]' list
+	data.append([int(val) for val in row])
+
+# grab length of each row (or the number of days the death count data represents)
+rowlength = len(data[0])
+# initialize list (size of each row) to contain the cumulative, global death count
+# of each day
+datasum = [0] * rowlength
+
+# iterate through ith elemnent of each row list, cumulatively adding the data.
+# store results in 'datasum[]' list
+for i in range(rowlength):
+	for vals in data:
+		datasum[i] += vals[i]
+
+# initialize and  append dates in '%m/%d/%y' format using 'datetime' library
+date = []
+for i in range(len(header)):
+	date.append(datetime.strptime(header[i], '%m/%d/%y'))
+
+# show number of deaths since most recent date
+print('Deaths since %s as of %s: ' % (date[-2], date[-1])) 
+print(datasum[-1] - datasum[-2])
+
+# plot relative death rate vs. time
+plt.plot(date, datasum)
+plt.xlabel('Date')
+plt.ylabel('Relative Death Rate')
+plt.title('COVID-19 Death Rate vs. Time')
+plt.grid()
+plt.show()
+

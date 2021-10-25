@@ -1,0 +1,26 @@
+#!/usr/bin/python
+
+import sys
+
+linecount = 0
+charcount = 0
+
+if(len(sys.argv[1:]) == 0):
+	print "Expect at least one argument"
+	exit()
+
+for f in sys.argv[1:]:
+	try:
+		fh = open(f,'r')
+		
+		for line in fh:
+			line = line.replace(" ", "")
+			linecount += 1
+			charcount += len(line) - 1		
+
+		print "Total lines:", linecount
+		print "Total characters:", charcount
+	except:
+		print "Cannot open", f
+fh.close()		
+	

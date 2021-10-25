@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+import os, sys, csv
+
+# initialize path to COVID-19 data
+path = "//home/pi/ECE331/HW06/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
+
+# try to open file
+try:
+	fh = open(path, "r")
+except:
+	print("Error: Can not open file")
+
+fh = open(path)
+
+reader = csv.reader(fh)
+
+length = len(next(reader))
+#print(length)
+reader.next()
+
+deaths = 0
+#list1 = []
+#for i in range(4, length):
+#	for row in reader:
+#		deaths += int(row[i])
+#		list1.append(deaths)
+#print(list1)
+
+#for i in range(4,6):
+#	print(i)
+#	for row in reader:
+#		deaths += int(row[i])
+#	print(deaths)
+
+
+for row in reader:
+	deaths += int(row[5])
+print(deaths)

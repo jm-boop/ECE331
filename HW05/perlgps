@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+# forces to initialize local vars with 'my' keyword
+use strict;
+# helps find typing mistakes
+use warnings;
+
+# try to open file (first CLA) with 'FILE' handler
+open (FILE, $ARGV[0]) or die "Cannot open file\n";
+
+# execute until eof
+while (<FILE>) {
+	# remove newline charact '$_'
+	chomp;
+	# split lines by commas, store into array '@fields'
+	my @fields = split(',');
+	# print specified field (column) of file
+	print "$fields[$ARGV[1]]\n";
+}
+close(FILE);
+

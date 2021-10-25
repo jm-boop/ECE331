@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+
+# forces to initialize local vars with 'my' keyword
+use strict;
+# helps find typing mistakes
+use warnings;
+
+# iterate through each CLA filename
+foreach my $filename (@ARGV) {
+	# extract number of hard links through stat() func
+	my $link = (stat($filename))[3];
+	# print # of hard links and file name if and only if
+	# number of hard links > 1
+	print "$link $filename\n" if ($link > 1);
+}
+
